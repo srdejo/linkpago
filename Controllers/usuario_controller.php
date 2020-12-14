@@ -13,6 +13,11 @@
 			$roles = Rol::all();
 			require_once('Views/Usuario/register.php');
 		}
+		
+		public function login($usuario){
+			$roles = Usuario::login($usuario);
+			header('Location: ../index.php');
+		}
 
 		//guardar
 		public function save($usuario){
@@ -53,7 +58,10 @@
 		}elseif ($_POST['action']=='update') {
 			$usuario= new Usuario($_POST['usuario'],$_POST['clave'],$_POST['rol_id']);
 			$usuarioController->update($usuario);
-		}		
+		}elseif($_POST['action']=='login'){
+			$usuario= new Usuario($_POST['usuario'],$_POST['clave'],null);
+			$usuarioController->login($usuario);
+		}
 	}
 
 	//se verifica que action esté definida

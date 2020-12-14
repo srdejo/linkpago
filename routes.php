@@ -33,12 +33,20 @@ function call($controller, $action)
 }
 
 //array con los controladores y sus respectivas acciones
-$controllers = array(
-	'usuario' => ['index', 'register'],
-	'comercio' => ['index', 'register'],
-	'peticion_pago' => ['index', 'register'],
-	'pago' => ['token'],
-);
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+	$controllers = array('usuario' => ['index','login']);
+} else {
+	// Show users the page!
+	$controllers = array(
+		'usuario' => ['register'],
+		'comercio' => ['index', 'register'],
+		'peticion_pago' => ['index', 'register'],
+		'pago' => ['token'],
+	);
+}
+
 //verifica que el controlador enviado desde index.php esté dentro del arreglo controllers
 if (array_key_exists($controller, $controllers)) {
 	//verifica que el arreglo controllers con la clave que es la variable controller del index exista la acción
