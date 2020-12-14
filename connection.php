@@ -19,5 +19,9 @@
 			}
 			return self::$instance;
 		}
+
+		public static function ultimoId(){
+			return self::$instance->lastInsertId();
+		}
 	}
 ?>

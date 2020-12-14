@@ -12,6 +12,21 @@ function call($controller, $action)
 			require_once('Models/rol.php');
 			$controller = new UsuarioController();
 			break;
+		case 'comercio':
+			require_once('Models/comercio.php');
+			$controller = new ComercioController();
+			break;
+		case 'peticion_pago':
+			require_once('Models/comercio.php');
+			require_once('Models/forma_pago.php');
+			$controller = new PeticionPagoController();
+			break;
+		case 'pago':
+			require_once('Models/peticion_pago.php');
+			require_once('Models/comercio.php');
+			require_once('Models/forma_pago.php');
+			$controller = new PagoController();
+			break;
 	}
 	//llama a la acción del controlador
 	$controller->{$action}();
@@ -19,7 +34,10 @@ function call($controller, $action)
 
 //array con los controladores y sus respectivas acciones
 $controllers = array(
-	'usuario' => ['index', 'register']
+	'usuario' => ['index', 'register'],
+	'comercio' => ['index', 'register'],
+	'peticion_pago' => ['index', 'register'],
+	'pago' => ['token'],
 );
 //verifica que el controlador enviado desde index.php esté dentro del arreglo controllers
 if (array_key_exists($controller, $controllers)) {
