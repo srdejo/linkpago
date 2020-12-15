@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.4
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-12-2020 a las 17:52:39
--- Versión del servidor: 10.4.17-MariaDB
--- Versión de PHP: 8.0.0
+-- Tiempo de generación: 15-12-2020 a las 02:00:34
+-- Versión del servidor: 10.1.40-MariaDB
+-- Versión de PHP: 7.3.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -34,6 +35,16 @@ CREATE TABLE `comercio` (
   `direccion` varchar(100) COLLATE utf8_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `comercio`
+--
+
+INSERT INTO `comercio` (`id`, `nombre`, `nit`, `direccion`) VALUES
+(1, 'CAPITAL Y SOLUCIONES SAS', '1234546', 'CR 25 1 A SUR 155 OF 1255'),
+(2, '123456', '1234546', 'CR 25 1 A SUR 155 OF 1255'),
+(3, 'Pepito Perez', '321654', 'cra 10 # 13 - 36'),
+(4, 'Pepito Perez', '321654', 'cra 10 # 13 - 36');
+
 -- --------------------------------------------------------
 
 --
@@ -44,6 +55,14 @@ CREATE TABLE `comercio_usuario` (
   `usuario` varchar(255) COLLATE utf8_spanish_ci NOT NULL,
   `comercio_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `comercio_usuario`
+--
+
+INSERT INTO `comercio_usuario` (`usuario`, `comercio_id`) VALUES
+('daniel', 1),
+('danipv2', 4);
 
 -- --------------------------------------------------------
 
@@ -56,6 +75,14 @@ CREATE TABLE `forma_pago` (
   `forma_pago` varchar(100) COLLATE utf8_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `forma_pago`
+--
+
+INSERT INTO `forma_pago` (`id`, `forma_pago`) VALUES
+(1, 'Tarjeta'),
+(2, 'Efectivo');
+
 -- --------------------------------------------------------
 
 --
@@ -64,10 +91,18 @@ CREATE TABLE `forma_pago` (
 
 CREATE TABLE `link_pagos` (
   `id` int(11) NOT NULL,
-  `token` int(11) NOT NULL,
-  `fecha_uso` datetime NOT NULL,
+  `token` varchar(110) COLLATE utf8_spanish_ci NOT NULL,
+  `fecha_uso` datetime DEFAULT NULL,
   `peticion_pago_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `link_pagos`
+--
+
+INSERT INTO `link_pagos` (`id`, `token`, `fecha_uso`, `peticion_pago_id`) VALUES
+(1, '5', NULL, 2),
+(2, '5fd80925a93d7', '2020-12-15 01:54:56', 4);
 
 -- --------------------------------------------------------
 
@@ -83,6 +118,14 @@ CREATE TABLE `persona` (
   `correo` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
   `telefono` varchar(15) COLLATE utf8_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `persona`
+--
+
+INSERT INTO `persona` (`id`, `nombre`, `apellido`, `direccion`, `correo`, `telefono`) VALUES
+(1, 'Daniel Eduardo', 'Ovallos', 'cra 10 # 13 - 36', 'srdejo@gmail.com', '3138523670'),
+(2, 'Daniel Eduardo', 'Ovallos', 'cra 10 # 13 - 36', 'srdejo@gmail.com', '3138523670');
 
 -- --------------------------------------------------------
 
@@ -100,6 +143,15 @@ CREATE TABLE `peticion_pago` (
   `forma_pago_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `peticion_pago`
+--
+
+INSERT INTO `peticion_pago` (`id`, `descripcion`, `monto`, `comision`, `franquisia`, `comercio_id`, `forma_pago_id`) VALUES
+(1, 'Plan gratuito', 123, 12, 'Visa', 1, 1),
+(2, 'Plan gratuito', 123, 12, 'Visa', 1, 1),
+(4, 'Chanclas', 25000, 2500, 'Visa', 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -111,6 +163,14 @@ CREATE TABLE `roles` (
   `rol` varchar(50) COLLATE utf8_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `roles`
+--
+
+INSERT INTO `roles` (`id`, `rol`) VALUES
+(1, 'Administrador'),
+(2, 'Punto de Venta');
+
 -- --------------------------------------------------------
 
 --
@@ -121,9 +181,16 @@ CREATE TABLE `transaccion` (
   `id` int(11) NOT NULL,
   `peticion_pago_id` int(11) NOT NULL,
   `persona_id` int(11) NOT NULL,
-  `referencia_efecty` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `numero_tarjeta` varchar(100) COLLATE utf8_spanish_ci NOT NULL
+  `referencia_efecty` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `numero_tarjeta` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `transaccion`
+--
+
+INSERT INTO `transaccion` (`id`, `peticion_pago_id`, `persona_id`, `referencia_efecty`, `numero_tarjeta`) VALUES
+(1, 4, 2, NULL, '45679');
 
 -- --------------------------------------------------------
 
@@ -136,6 +203,15 @@ CREATE TABLE `usuarios` (
   `clave` varchar(255) COLLATE utf8_spanish_ci NOT NULL,
   `rol_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`usuario`, `clave`, `rol_id`) VALUES
+('daniel', '123456', 2),
+('danipv', '1234', 1),
+('danipv2', '1234', 2);
 
 --
 -- Índices para tablas volcadas
@@ -210,43 +286,43 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `comercio`
 --
 ALTER TABLE `comercio`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `forma_pago`
 --
 ALTER TABLE `forma_pago`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `link_pagos`
 --
 ALTER TABLE `link_pagos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `peticion_pago`
 --
 ALTER TABLE `peticion_pago`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `transaccion`
 --
 ALTER TABLE `transaccion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas
