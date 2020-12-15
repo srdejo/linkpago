@@ -2,10 +2,10 @@
 
 	class UsuarioController
 	{	
-		public function __construct(){}
+		public function __construct(){
+		}
 
 		public function index(){
-			$usuarios=Usuario::all();
 			require_once('Views/Usuario/index.php');
 		}
 
@@ -13,10 +13,16 @@
 			$roles = Rol::all();
 			require_once('Views/Usuario/register.php');
 		}
+
+		public function login(){
+			$roles = Rol::all();
+			require_once('Views/Usuario/register.php');
+		}
 		
-		public function login($usuario){
-			$roles = Usuario::login($usuario);
-			header('Location: ../index.php');
+		public function auth($usuario){
+			if(Usuario::login($usuario)){
+				header('Location: ../index.php?controller=peticion_pago&action=index');				
+			}
 		}
 
 		//guardar
@@ -60,13 +66,13 @@
 			$usuarioController->update($usuario);
 		}elseif($_POST['action']=='login'){
 			$usuario= new Usuario($_POST['usuario'],$_POST['clave'],null);
-			$usuarioController->login($usuario);
+			$usuarioController->auth($usuario);
 		}
 	}
 
 	//se verifica que action esté definida
 	if (isset($_GET['action'])) {
-		if ($_GET['action']!='register'&$_GET['action']!='index') {
+		if ($_GET['action']!='register'&$_GET['action']!='index'&$_GET['action']!='auth') {
 			require_once('../connection.php');
 			$usuarioController=new UsuarioController();
 			//para eliminar

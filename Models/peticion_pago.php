@@ -9,9 +9,10 @@ class PeticionPago
     public $franquisia;
     public $comercio_id;
     public $forma_pago_id;
+    public $estado;
 
     //constructor de la clase
-    function __construct($id, $descripcion, $monto, $comision, $franquisia, $comercio_id, $forma_pago_id)
+    function __construct($id, $descripcion, $monto, $comision, $franquisia, $comercio_id, $forma_pago_id, $estado)
     {
         $this->id = $id;
         $this->descripcion = $descripcion;
@@ -20,6 +21,7 @@ class PeticionPago
         $this->franquisia = $franquisia;
         $this->comercio_id = $comercio_id;
         $this->forma_pago_id = $forma_pago_id;
+        $this->estado = $estado;
     }
 
     public static function save($peticion_pago)
@@ -39,15 +41,23 @@ class PeticionPago
     //función para obtener todos los usuarios
     public static function all()
     {
-        $listaUsuarios = [];
+        $listaPagos = [];
         $db = Db::getConnect();
-        $sql = $db->query('SELECT * FROM usuarios u INNER JOIN roles r ON u.rol_id = r.id');
+        $sql = $db->query('SELECT P.*, L.token, L.fecha_uso, CASE WHEN L.fecha_uso IS NULL THEN "PENDIENTE" ELSE "PAGO" END AS estado FROM PETICION_PAGO P INNER JOIN LINK_PAGOS L ON P.id = L.peticion_pago_id');
 
-        // carga en la $listaUsuarios cada registro desde la base de datos
-        foreach ($sql->fetchAll() as $usuario) {
-            $listaUsuarios[] = new Usuario($usuario['usuario'], $usuario['clave'], $usuario['rol']);
+        foreach ($sql->fetchAll() as $link) {
+            $listaPagos[] = new PeticionPago(
+                $link['id'],
+                $link['descripcion'],
+                $link['monto'],
+                $link['comision'],
+                $link['franquisia'],
+                $link['comercio_id'],
+                $link['token'],
+                $link['estado']
+            );
         }
-        return $listaUsuarios;
+        return $listaPagos;
     }
 
     public static function getByToken($token)
@@ -66,7 +76,8 @@ class PeticionPago
             $peticionPagoDb['comision'],
             $peticionPagoDb['franquisia'],
             $peticionPagoDb['comercio_id'],
-            $peticionPagoDb['forma_pago_id']
+            $peticionPagoDb['forma_pago_id'],
+            "PENDIENTE"
         );
         return $peticionPago;
     }

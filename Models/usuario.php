@@ -78,7 +78,7 @@ class Usuario
 	{
 		//buscar
 		$db = Db::getConnect();
-		$select = $db->prepare('SELECT * FROM usuarios WHERE usuario=:usuario AND clave:clave');
+		$select = $db->prepare('SELECT * FROM usuarios WHERE usuario=:usuario AND clave=:clave');
 		$select->bindValue('usuario', $usuario->usuario);
 		$select->bindValue('clave', $usuario->clave);
 		$select->execute();
@@ -86,10 +86,10 @@ class Usuario
 		//asignarlo al objeto usuario
 		$usuarioDb = $select->fetch();
 		if (!$usuarioDb) {
-			echo '<p class="error">Contraseña Incorrecta!</p>';
+			return false;
 		} else { 
 			$_SESSION['user_id'] = $usuarioDb['usuario'];
-			$usuario = new Usuario($usuarioDb['usuario'], $usuarioDb['clave'], $usuarioDb['rol_id']);
+			return true;
 		}
 	}
 }

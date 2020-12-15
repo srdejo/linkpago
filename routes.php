@@ -19,6 +19,7 @@ function call($controller, $action)
 		case 'peticion_pago':
 			require_once('Models/comercio.php');
 			require_once('Models/forma_pago.php');
+			require_once('Models/peticion_pago.php');
 			$controller = new PeticionPagoController();
 			break;
 		case 'pago':
@@ -32,20 +33,13 @@ function call($controller, $action)
 	$controller->{$action}();
 }
 
-//array con los controladores y sus respectivas acciones
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-	$controllers = array('usuario' => ['index','login']);
-} else {
-	// Show users the page!
-	$controllers = array(
-		'usuario' => ['register'],
-		'comercio' => ['index', 'register'],
-		'peticion_pago' => ['index', 'register'],
-		'pago' => ['token'],
-	);
-}
+// Show users the page!
+$controllers = array(
+	'usuario' => ['register', 'index', 'login'],
+	'comercio' => ['index', 'register'],
+	'peticion_pago' => ['index', 'register'],
+	'pago' => ['token','index'],
+);
 
 //verifica que el controlador enviado desde index.php esté dentro del arreglo controllers
 if (array_key_exists($controller, $controllers)) {
